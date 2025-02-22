@@ -140,7 +140,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const currentQuestion = questions[currentQuestionIndex];
 
         if (currentQuestion.isMultipleChoice) {
-            // Check if all correct answers are selected
+            // Check if all correct answers are selected and no extra answers are selected
             const correctAnswers = currentQuestion.answer.sort().toString();
             const userAnswers = selectedAnswers.sort().toString();
             if (userAnswers === correctAnswers) {
