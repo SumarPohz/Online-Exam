@@ -70,7 +70,7 @@ document.getElementById('no-btn').addEventListener('click', function() {
 // Exam Logic
 let currentQuestionIndex = 0;
 let score = 0;
-let timeLeft = 300; // 5 minutes in seconds
+let timeLeft = 900; // 5 minutes in seconds
 let timerInterval;
 
 const questions = [
