@@ -140,17 +140,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const currentQuestion = questions[currentQuestionIndex];
 
         if (currentQuestion.isMultipleChoice) {
-            // Check if all correct answers are selected and no incorrect answers are selected
-            const correctAnswers = currentQuestion.answer;
-            const userAnswers = selectedAnswers;
-
             // Check if all correct answers are selected
-            const allCorrectSelected = correctAnswers.every(answer => userAnswers.includes(answer));
-
-            // Check if no incorrect answers are selected
-            const noIncorrectSelected = userAnswers.every(answer => correctAnswers.includes(answer));
-
-            if (allCorrectSelected && noIncorrectSelected) {
+            const correctAnswers = currentQuestion.answer.sort().toString();
+            const userAnswers = selectedAnswers.sort().toString();
+            if (userAnswers === correctAnswers) {
                 score += 10; // Add 10 marks for correct answer
             }
         } else {
