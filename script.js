@@ -111,11 +111,11 @@ document.addEventListener('DOMContentLoaded', function() {
     function loadQuestion() {
         if (currentQuestionIndex < questions.length) {
             const currentQuestion = questions[currentQuestionIndex];
-            let optionsHtml = currentQuestion.options.map(option => `
-                <label>
-                    <input type="${currentQuestion.isMultipleChoice ? 'checkbox' : 'radio'}" name="answer" value="${option.charAt(0)}">
+            let optionsHtml = currentQuestion.options.map((option, index) => `
+                <label for="option${index}">
+                    <input type="${currentQuestion.isMultipleChoice ? 'checkbox' : 'radio'}" name="answer" value="${option.charAt(0)}" id="option${index}">
                     ${option}
-                </label><br>
+                </label>
             `).join('');
 
             questionContainer.innerHTML = `
