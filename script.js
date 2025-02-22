@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Prevent form submission on button click
     proceedBtn.addEventListener('click', function(event) {
-        event.preventDefault();
+        event.preventDefault(); // Prevent form submission
         if (validateForm()) {
             popup.style.display = 'block';
         }
@@ -226,7 +226,6 @@ document.addEventListener('DOMContentLoaded', function() {
     function submitFormToFormspree() {
         const formData = new FormData(registrationForm);
 
-        // Replace 'YOUR_FORM_ID' with your actual Formspree endpoint
         fetch('https://formspree.io/f/mbldbqkp', {
             method: 'POST',
             body: formData,
@@ -248,4 +247,71 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Validate mobile number (exactly 10 digits)
-    function
+    function validateMobileNumber(mobile) {
+        return /^\d{10}$/.test(mobile);
+    }
+
+    // Validate all fields before proceeding
+    function validateForm() {
+        const name = document.getElementById('name').value.trim();
+        const designation = document.getElementById('designation').value.trim();
+        const agency = document.getElementById('agency').value.trim();
+        const mobile = document.getElementById('mobile').value.trim();
+        const email = document.getElementById('email').value.trim();
+
+        if (!name || !designation || !agency || !mobile || !email) {
+            alert("All fields are mandatory. Please fill in all details.");
+            return false;
+        }
+
+        if (!validateMobileNumber(mobile)) {
+            alert("Mobile number must be exactly 10 digits.");
+            return false;
+        }
+
+        return true;
+    }
+
+    document.addEventListener('copy', function(e) {
+        e.preventDefault();
+    });
+
+    document.addEventListener('cut', function(e) {
+        e.preventDefault();
+    });
+
+    document.addEventListener('paste', function(e) {
+        e.preventDefault();
+    });
+
+    document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+    });
+
+    document.addEventListener('selectstart', function(e) {
+        e.preventDefault();
+    });
+
+    document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && (e.key === 'c' || e.key === 'C' || e.key === 'x' || e.key === 'X' || e.key === 'v' || e.key === 'V')) {
+            e.preventDefault();
+        }
+    });
+
+    window.addEventListener('beforeunload', function() {
+        if (examStarted) {
+            localStorage.setItem('timeLeft', timeLeft);
+            localStorage.setItem('currentQuestionIndex', currentQuestionIndex);
+            localStorage.setItem('score', score);
+        }
+    });
+
+    window.addEventListener('load', function() {
+        if (localStorage.getItem('timeLeft')) {
+            timeLeft = parseInt(localStorage.getItem('timeLeft'));
+            currentQuestionIndex = parseInt(localStorage.getItem('currentQuestionIndex'));
+            score = parseInt(localStorage.getItem('score'));
+            startExam();
+        }
+    });
+});
