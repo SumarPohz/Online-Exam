@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     let examStarted = false;
     let currentQuestionIndex = 0;
-    let timeLeft = 1200; // Total time for all questions (1200 seconds = 20 minutes)
+    let timeLeft = 1200;
     let timer;
     let score = 0;
 
@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', function() {
         {
             question: "Which of the following PPE would you need to wear to protect yourself against flying objects? (Multiple Options)",
             options: ["A. Ear plugs or ear defenders", "B. Helmets or Bump Caps", "C. Safety spectacles, goggles or face shields."],
-            answer: ["B", "C"],
+            answer: ["A", "C"],
             isMultipleChoice: true
         },
         {
@@ -87,8 +87,34 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     ];
 
+    function validateMobileNumber(mobile) {
+        return /^\d{10}$/.test(mobile);
+    }
+
+    function validateForm() {
+        const name = document.getElementById('name').value.trim();
+        const designation = document.getElementById('designation').value.trim();
+        const agency = document.getElementById('agency').value.trim();
+        const mobile = document.getElementById('mobile').value.trim();
+        const email = document.getElementById('email').value.trim();
+
+        if (!name || !designation || !agency || !mobile || !email) {
+            alert("All fields are mandatory. Please fill in all details.");
+            return false;
+        }
+
+        if (!validateMobileNumber(mobile)) {
+            alert("Mobile number must be exactly 10 digits.");
+            return false;
+        }
+
+        return true;
+    }
+
     proceedBtn.addEventListener('click', function() {
-        popup.style.display = 'block';
+        if (validateForm()) {
+            popup.style.display = 'block';
+        }
     });
 
     noBtn.addEventListener('click', function() {
@@ -138,13 +164,18 @@ document.addEventListener('DOMContentLoaded', function() {
         const selectedAnswers = Array.from(document.querySelectorAll('input[name="answer"]:checked')).map(input => input.value);
         const currentQuestion = questions[currentQuestionIndex];
 
+        if (selectedAnswers.length === 0) {
+            alert("Please select an answer before proceeding.");
+            return;
+        }
+
         if (currentQuestion.isMultipleChoice) {
             if (selectedAnswers.sort().toString() === currentQuestion.answer.sort().toString()) {
-                score += 10; // Add 10 marks for correct answer
+                score += 10;
             }
         } else {
             if (selectedAnswers[0] === currentQuestion.answer) {
-                score += 10; // Add 10 marks for correct answer
+                score += 10;
             }
         }
 
@@ -188,37 +219,32 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
     }
 
-    // Prevent copying, cutting, and pasting
     document.addEventListener('copy', function(e) {
-        e.preventDefault(); // Disable copying
+        e.preventDefault();
     });
 
     document.addEventListener('cut', function(e) {
-        e.preventDefault(); // Disable cutting
+        e.preventDefault();
     });
 
     document.addEventListener('paste', function(e) {
-        e.preventDefault(); // Disable pasting
+        e.preventDefault();
     });
 
-    // Disable right-clicking
     document.addEventListener('contextmenu', function(e) {
-        e.preventDefault(); // Disable right-clicking
+        e.preventDefault();
     });
 
-    // Disable text selection
     document.addEventListener('selectstart', function(e) {
-        e.preventDefault(); // Disable text selection
+        e.preventDefault();
     });
 
-    // Disable keyboard shortcuts (Ctrl+C, Ctrl+X, Ctrl+V)
     document.addEventListener('keydown', function(e) {
         if (e.ctrlKey && (e.key === 'c' || e.key === 'C' || e.key === 'x' || e.key === 'X' || e.key === 'v' || e.key === 'V')) {
-            e.preventDefault(); // Disable keyboard shortcuts
+            e.preventDefault();
         }
     });
 
-    // Handle page refresh
     window.addEventListener('beforeunload', function() {
         if (examStarted) {
             localStorage.setItem('timeLeft', timeLeft);
