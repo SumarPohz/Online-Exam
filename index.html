@@ -1,27 +1,59 @@
-<form id="registration-form">
-    <h2>Exam Registration</h2>
-    <label for="name">Name:</label>
-    <input type="text" id="name" name="name" required>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Exam Platform</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="form-container">
+        <form id="registration-form">
+            <h2>Exam Registration</h2>
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
 
-    <label for="designation">Designation:</label>
-    <select id="designation" name="designation" required>
-        <option value="">Select Designation</option>
-        <option value="Security Guard">Security Guard</option>
-        <option value="Security Supervisor">Security Supervisor</option>
-    </select>
+            <label for="designation">Designation:</label>
+            <select id="designation" name="designation" required>
+                <option value="Security Guard">Security Guard</option>
+                <option value="Security Supervisor">Security Supervisor</option>
+            </select>
 
-    <label for="agency">Agency Name:</label>
-    <input type="text" id="agency" name="agency" required>
+            <label for="agency">Agency Name:</label>
+            <input type="text" id="agency" name="agency" required>
 
-    <label for="mobile">Mobile Number:</label>
-    <input type="tel" id="mobile" name="mobile" pattern="\d{10}" title="Please enter exactly 10 digits" required>
+            <label for="mobile">Mobile Number:</label>
+            <input type="tel" id="mobile" name="mobile" required>
 
-    <label for="email">Email ID:</label>
-    <input type="email" id="email" name="email" required>
+            <label for="email">Email ID:</label>
+            <input type="email" id="email" name="email" required>
 
-    <!-- Hidden fields for exam data -->
-    <input type="hidden" id="score" name="score">
-    <input type="hidden" id="answers" name="answers">
+            <button type="button" id="proceed-btn">Proceed Next</button>
+        </form>
+    </div>
 
-    <button type="button" id="proceed-btn">Proceed Next</button>
-</form>
+    <div id="exam-container" style="display:none;">
+        <h2>Exam</h2>
+        <div id="question-container"></div>
+        <div id="timer"></div>
+    </div>
+
+    <div id="popup" style="display:none;">
+        <p>You're about to start your exam. Are you ready?</p>
+        <button id="yes-btn">Yes</button>
+        <button id="no-btn">No</button>
+    </div>
+
+    <!-- Celebration Popup -->
+    <div id="celebration-popup" style="display:none;">
+        <img src="https://media.giphy.com/media/3o7abKhOpu0NwenH3O/giphy.gif" alt="Celebration GIF">
+        <h2>Congratulations! You passed the exam!</h2>
+    </div>
+
+    <footer>
+        <p>Coded and designed by <strong>Sumar Pohz</strong></p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
