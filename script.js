@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const noBtn = document.getElementById('no-btn');
     const questionContainer = document.getElementById('question-container');
     const timerDisplay = document.getElementById('timer');
+    const celebrationPopup = document.getElementById('celebration-popup');
 
     let examStarted = false;
     let currentQuestionIndex = 0;
@@ -118,16 +119,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 </label>
             `).join('');
 
+            // Change button text to "Submit" on the last question
+            const buttonText = currentQuestionIndex === questions.length - 1 ? "Submit" : "Next";
+
             questionContainer.innerHTML = `
                 <p><strong>Question ${currentQuestionIndex + 1}:</strong> ${currentQuestion.question}</p>
                 <form id="answer-form">${optionsHtml}</form>
-                <button type="button" id="next-btn">Next</button>
+                <button type="button" id="next-btn">${buttonText}</button>
             `;
 
             document.getElementById('next-btn').addEventListener('click', nextQuestion);
             timerDisplay.textContent = `Time left: ${formatTime(timeLeft)}`;
         } else {
-            endExam();
+            endExam(); // Ensure the exam ends properly
         }
     }
 
@@ -136,7 +140,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const currentQuestion = questions[currentQuestionIndex];
 
         if (currentQuestion.isMultipleChoice) {
-            if (selectedAnswers.sort().toString() === currentQuestion.answer.sort().toString()) {
+            // Check if all correct answers are selected
+            const correctAnswers = currentQuestion.answer.sort().toString();
+            const userAnswers = selectedAnswers.sort().toString();
+            if (userAnswers === correctAnswers) {
                 score += 10; // Add 10 marks for correct answer
             }
         } else {
@@ -147,9 +154,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
         currentQuestionIndex++;
         if (currentQuestionIndex < questions.length) {
-            loadQuestion();
+            loadQuestion(); // Load the next question
         } else {
-            endExam();
+            endExam(); // End the exam after the last question
         }
     }
 
@@ -171,21 +178,26 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function endExam() {
-        clearInterval(timer);
+        clearInterval(timer); // Stop the timer
         const passMark = 60;
+        const resultMessage = score >= passMark ? 
+            `<h2>Congratulations! You passed the exam.</h2>` : 
+            `<h2>Sorry, you failed the exam. Please try again.</h2>`;
+
+        examContainer.innerHTML = `
+            <h2>Exam Completed!</h2>
+            <p>Your score: <strong>${score} out of 100</strong></p>
+            <p>Minimum marks required: <strong>${passMark}</strong></p>
+            ${resultMessage}
+        `;
+
+        // Show celebration popup if the user passed
         if (score >= passMark) {
             celebrationPopup.style.display = 'block';
             setTimeout(() => {
                 celebrationPopup.style.display = 'none';
             }, 5000); // Hide the celebration popup after 5 seconds
         }
-
-        examContainer.innerHTML = `
-            <h2>Exam Completed!</h2>
-            <p>Your score: <strong>${score} out of 100</strong></p>
-            <p>Minimum marks required: <strong>${passMark}</strong></p>
-            ${score >= passMark ? `<h2>Congratulations! You passed the exam.</h2>` : `<h2>Sorry, you failed the exam. Please try again.</h2>`}
-        `;
     }
 
     // Prevent copying, cutting, and pasting
