@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     let examStarted = false;
     let currentQuestionIndex = 0;
-    let timeLeft = 120; // Total time for all questions (2 minutes)
+    let timeLeft = 1200; // Total time for all questions (1200 seconds = 20 minutes)
     let timer;
     let score = 0;
 
@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', function() {
             `;
 
             document.getElementById('next-btn').addEventListener('click', nextQuestion);
-            timerDisplay.textContent = `Time left: ${timeLeft} seconds`;
+            timerDisplay.textContent = `Time left: ${formatTime(timeLeft)}`;
         } else {
             endExam();
         }
@@ -156,7 +156,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function startTimer() {
         timer = setInterval(function() {
             timeLeft--;
-            timerDisplay.textContent = `Time left: ${timeLeft} seconds`;
+            timerDisplay.textContent = `Time left: ${formatTime(timeLeft)}`;
             if (timeLeft <= 0) {
                 clearInterval(timer);
                 endExam();
@@ -164,54 +164,57 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 1000);
     }
 
+    function formatTime(seconds) {
+        const minutes = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
+    }
+
     function endExam() {
         clearInterval(timer);
         const passMark = 60;
-        const resultMessage = score >= passMark ? 
-            `<h2>Congratulations! You passed the exam.</h2>` : 
-            `<h2>Sorry, you failed the exam. Please try again.</h2>`;
+        if (score >= passMark) {
+            celebrationPopup.style.display = 'block';
+            setTimeout(() => {
+                celebrationPopup.style.display = 'none';
+            }, 5000); // Hide the celebration popup after 5 seconds
+        }
 
         examContainer.innerHTML = `
             <h2>Exam Completed!</h2>
             <p>Your score: <strong>${score} out of 100</strong></p>
             <p>Minimum marks required: <strong>${passMark}</strong></p>
-            ${resultMessage}
+            ${score >= passMark ? `<h2>Congratulations! You passed the exam.</h2>` : `<h2>Sorry, you failed the exam. Please try again.</h2>`}
         `;
     }
 
     // Prevent copying, cutting, and pasting
     document.addEventListener('copy', function(e) {
-        e.preventDefault();
-        alert("Copying is disabled during the exam.");
+        e.preventDefault(); // Disable copying
     });
 
     document.addEventListener('cut', function(e) {
-        e.preventDefault();
-        alert("Cutting is disabled during the exam.");
+        e.preventDefault(); // Disable cutting
     });
 
     document.addEventListener('paste', function(e) {
-        e.preventDefault();
-        alert("Pasting is disabled during the exam.");
+        e.preventDefault(); // Disable pasting
     });
 
     // Disable right-clicking
     document.addEventListener('contextmenu', function(e) {
-        e.preventDefault();
-        alert("Right-clicking is disabled during the exam.");
+        e.preventDefault(); // Disable right-clicking
     });
 
     // Disable text selection
     document.addEventListener('selectstart', function(e) {
-        e.preventDefault();
-        alert("Text selection is disabled during the exam.");
+        e.preventDefault(); // Disable text selection
     });
 
     // Disable keyboard shortcuts (Ctrl+C, Ctrl+X, Ctrl+V)
     document.addEventListener('keydown', function(e) {
         if (e.ctrlKey && (e.key === 'c' || e.key === 'C' || e.key === 'x' || e.key === 'X' || e.key === 'v' || e.key === 'V')) {
-            e.preventDefault();
-            alert("Keyboard shortcuts for copying, cutting, and pasting are disabled during the exam.");
+            e.preventDefault(); // Disable keyboard shortcuts
         }
     });
 
