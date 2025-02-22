@@ -17,7 +17,24 @@ document.addEventListener('DOMContentLoaded', function() {
     const questions = [
         // Questions and answers as provided earlier
     ];
+ function submitExamData() {
+        const examData = {
+            name: document.getElementById('name').value.trim(),
+            designation: document.getElementById('designation').value.trim(),
+            agency: document.getElementById('agency').value.trim(),
+            mobile: document.getElementById('mobile').value.trim(),
+            email: document.getElementById('email').value.trim(),
+            score: score,
+            answers: JSON.stringify(userAnswers, null, 2)
+        };
 
+        // Populate hidden fields
+        document.getElementById('score').value = examData.score;
+        document.getElementById('answers').value = examData.answers;
+
+        // Submit the form
+        registrationForm.submit();
+    }
     // Hash function to securely hash the mobile number
     async function hashMobileNumber(mobile) {
         const encoder = new TextEncoder();
