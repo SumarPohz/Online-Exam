@@ -19,25 +19,29 @@ document.addEventListener('DOMContentLoaded', function() {
         // Questions and answers as provided earlier
     ];
 
-    // Function to collect and submit exam data
-    function submitExamData() {
-        const examData = {
-            name: document.getElementById('name').value.trim(),
-            designation: document.getElementById('designation').value.trim(),
-            agency: document.getElementById('agency').value.trim(),
-            mobile: document.getElementById('mobile').value.trim(),
-            email: document.getElementById('email').value.trim(),
-            score: score,
-            answers: JSON.stringify(userAnswers, null, 2)
-        };
+  function submitFormToFormspree() {
+    const formData = new FormData(registrationForm);
 
-        // Populate hidden fields
-        document.getElementById('score').value = examData.score;
-        document.getElementById('answers').value = examData.answers;
-
-        // Submit the form
-        registrationForm.submit();
-    }
+    // Replace 'YOUR_FORM_ID' with your actual Formspree endpoint
+    fetch('https://formspree.io/f/mbldbqkp', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'Accept': 'application/json'
+        }
+    })
+    .then(response => {
+        if (response.ok) {
+            alert("Exam data submitted successfully!");
+        } else {
+            alert("Failed to submit exam data. Please try again.");
+        }
+    })
+    .catch(error => {
+        console.error("Error submitting exam data:", error);
+        alert("An error occurred while submitting exam data.");
+    });
+}
     // Hash function to securely hash the mobile number
     async function hashMobileNumber(mobile) {
         const encoder = new TextEncoder();
