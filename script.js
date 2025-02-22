@@ -1,21 +1,53 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const registrationForm = document.getElementById('registration-form');
-    const examContainer = document.getElementById('exam-container');
-    const popup = document.getElementById('popup');
-    const proceedBtn = document.getElementById('proceed-btn');
-    const yesBtn = document.getElementById('yes-btn');
-    const noBtn = document.getElementById('no-btn');
-    const questionContainer = document.getElementById('question-container');
-    const timerDisplay = document.getElementById('timer');
+document.getElementById('registration-form').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent the default form submission
 
-    let examStarted = false;
-    let currentQuestionIndex = 0;
-    let timeLeft = 1200;
-    let timer;
-    let score = 0;
-    let userAnswers = [];
+    const form = event.target;
+    const formData = new FormData(form);
 
-    const questions = [
+    fetch(form.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'Accept': 'application/json'
+        }
+    })
+    .then(response => {
+        if (response.ok) {
+            alert('Form submitted successfully!');
+            form.reset(); // Clear the form
+            // Optionally, hide the form and show the exam container
+            document.getElementById('form-container').style.display = 'none';
+            document.getElementById('exam-container').style.display = 'block';
+        } else {
+            alert('Form submission failed. Please try again.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Form submission failed. Please try again.');
+    });
+});
+
+// Handle the "Yes" button in the popup
+document.getElementById('yes-btn').addEventListener('click', function() {
+    document.getElementById('popup').style.display = 'none';
+    startExam(); // Start the exam
+});
+
+// Handle the "No" button in the popup
+document.getElementById('no-btn').addEventListener('click', function() {
+    document.getElementById('popup').style.display = 'none';
+    document.getElementById('form-container').style.display = 'block'; // Show the form again
+    document.getElementById('exam-container').style.display = 'none'; // Hide the exam container
+});
+
+// Exam Logic
+let currentQuestionIndex = 0;
+let score = 0;
+let timeLeft = 300; // 5 minutes in seconds
+let timerInterval;
+
+const questions = [
         {
             question: "What are the three things that a fire needs to burn?",
             options: ["A. Fuel, Oxygen, Gas.", "B. Fuel, Gas, Wood.", "C. Fuel, Oxygen, Heat.", "D. Air, Heat, Water."],
@@ -87,231 +119,74 @@ document.addEventListener('DOMContentLoaded', function() {
             answer: "D"
         }
     ];
+// Function to start the exam
+function startExam() {
+    loadQuestion();
+    startTimer();
+}
 
-    // Prevent form submission on button click
-    proceedBtn.addEventListener('click', function(event) {
-        event.preventDefault(); // Prevent form submission
-        if (validateForm()) {
-            popup.style.display = 'block';
-        }
-    });
+// Function to load a question
+function loadQuestion() {
+    const questionContainer = document.getElementById('question-container');
+    const currentQuestion = questions[currentQuestionIndex];
 
-    noBtn.addEventListener('click', function() {
-        popup.style.display = 'none';
-    });
-
-    yesBtn.addEventListener('click', function() {
-        popup.style.display = 'none';
-        registrationForm.style.display = 'none';
-        examContainer.style.display = 'block';
-        startExam();
-    });
-
-    function startExam() {
-        examStarted = true;
-        loadQuestion();
-        startTimer();
-    }
-
-    function loadQuestion() {
-        if (currentQuestionIndex < questions.length) {
-            const currentQuestion = questions[currentQuestionIndex];
-            let optionsHtml = currentQuestion.options.map(option => `
+    if (currentQuestion) {
+        questionContainer.innerHTML = `
+            <h3>${currentQuestion.question}</h3>
+            ${currentQuestion.options.map((option, index) => `
                 <label>
-                    <input type="${currentQuestion.isMultipleChoice ? 'checkbox' : 'radio'}" name="answer" value="${option.charAt(0)}">
+                    <input type="radio" name="answer" value="${option}">
                     ${option}
-                </label><br>
-            `).join('');
-
-            const isLastQuestion = currentQuestionIndex === questions.length - 1;
-            const buttonText = isLastQuestion ? "Submit" : "Next";
-
-            questionContainer.innerHTML = `
-                <p><strong>Question ${currentQuestionIndex + 1}:</strong> ${currentQuestion.question}</p>
-                <form id="answer-form">${optionsHtml}</form>
-                <button type="button" id="next-btn">${buttonText}</button>
-            `;
-
-            document.getElementById('next-btn').addEventListener('click', nextQuestion);
-            timerDisplay.textContent = `Time left: ${formatTime(timeLeft)}`;
-        } else {
-            endExam();
-        }
-    }
-
-    function nextQuestion() {
-        const selectedAnswers = Array.from(document.querySelectorAll('input[name="answer"]:checked')).map(input => input.value);
-        const currentQuestion = questions[currentQuestionIndex];
-
-        if (selectedAnswers.length === 0) {
-            alert("Please select an answer before proceeding.");
-            return;
-        }
-
-        // Store the user's answer
-        userAnswers.push({
-            question: currentQuestion.question,
-            answer: selectedAnswers
-        });
-
-        if (currentQuestion.isMultipleChoice) {
-            if (selectedAnswers.sort().toString() === currentQuestion.answer.sort().toString()) {
-                score += 10;
-            }
-        } else {
-            if (selectedAnswers[0] === currentQuestion.answer) {
-                score += 10;
-            }
-        }
-
-        currentQuestionIndex++;
-        if (currentQuestionIndex < questions.length) {
-            loadQuestion();
-        } else {
-            endExam();
-        }
-    }
-
-    function startTimer() {
-        timer = setInterval(function() {
-            timeLeft--;
-            timerDisplay.textContent = `Time left: ${formatTime(timeLeft)}`;
-            if (timeLeft <= 0) {
-                clearInterval(timer);
-                endExam();
-            }
-        }, 1000);
-    }
-
-    function formatTime(seconds) {
-        const minutes = Math.floor(seconds / 60);
-        const secs = seconds % 60;
-        return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
-    }
-
-    function endExam() {
-        clearInterval(timer);
-        const passMark = 60;
-        const resultMessage = score >= passMark ? 
-            `<h2>Congratulations! You passed the exam.</h2>` : 
-            `<h2>Sorry, you failed the exam. Please try again.</h2>`;
-
-        examContainer.innerHTML = `
-            <h2>Exam Completed!</h2>
-            <p>Your score: <strong>${score} out of 100</strong></p>
-            <p>Minimum marks required: <strong>${passMark}</strong></p>
-            ${resultMessage}
+                </label>
+            `).join('')}
+            <button id="next-btn" onclick="nextQuestion()">Next</button>
         `;
-
-        // Prepare exam data for submission
-        const examData = {
-            name: document.getElementById('name').value.trim(),
-            designation: document.getElementById('designation').value.trim(),
-            agency: document.getElementById('agency').value.trim(),
-            mobile: document.getElementById('mobile').value.trim(),
-            email: document.getElementById('email').value.trim(),
-            score: score,
-            answers: JSON.stringify(userAnswers, null, 2)
-        };
-
-        // Populate hidden fields
-        document.getElementById('score').value = examData.score;
-        document.getElementById('answers').value = examData.answers;
-
-        // Submit the form to Formspree
-        submitFormToFormspree();
+    } else {
+        endExam();
     }
+}
 
-    // Function to submit the form to Formspree
-    function submitFormToFormspree() {
-        const formData = new FormData(registrationForm);
+// Function to move to the next question
+function nextQuestion() {
+    const selectedAnswer = document.querySelector('input[name="answer"]:checked');
 
-        fetch('https://formspree.io/f/mbldbqkp', {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'Accept': 'application/json'
-            }
-        })
-        .then(response => {
-            if (response.ok) {
-                alert("Exam data submitted successfully!");
-            } else {
-                alert("Failed to submit exam data. Please try again.");
-            }
-        })
-        .catch(error => {
-            console.error("Error submitting exam data:", error);
-            alert("An error occurred while submitting exam data.");
-        });
+    if (selectedAnswer) {
+        if (selectedAnswer.value === questions[currentQuestionIndex].correctAnswer) {
+            score++;
+        }
+        currentQuestionIndex++;
+        loadQuestion();
+    } else {
+        alert("Please select an answer before proceeding!");
     }
+}
 
-    // Validate mobile number (exactly 10 digits)
-    function validateMobileNumber(mobile) {
-        return /^\d{10}$/.test(mobile);
-    }
+// Function to end the exam
+function endExam() {
+    clearInterval(timerInterval);
+    document.getElementById('exam-container').style.display = 'none';
+    document.getElementById('celebration-popup').style.display = 'block';
 
-    // Validate all fields before proceeding
-    function validateForm() {
-        const name = document.getElementById('name').value.trim();
-        const designation = document.getElementById('designation').value.trim();
-        const agency = document.getElementById('agency').value.trim();
-        const mobile = document.getElementById('mobile').value.trim();
-        const email = document.getElementById('email').value.trim();
+    // Display the score
+    const celebrationPopup = document.getElementById('celebration-popup');
+    celebrationPopup.innerHTML = `
+        <img src="https://media.giphy.com/media/3o7abKhOpu0NwenH3O/giphy.gif" alt="Celebration GIF">
+        <h2>Congratulations! You scored ${score} out of ${questions.length}!</h2>
+    `;
+}
 
-        if (!name || !designation || !agency || !mobile || !email) {
-            alert("All fields are mandatory. Please fill in all details.");
-            return false;
+// Timer Logic
+function startTimer() {
+    const timerDisplay = document.getElementById('timer');
+    timerInterval = setInterval(() => {
+        if (timeLeft > 0) {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerDisplay.textContent = `Time Left: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+            timeLeft--;
+        } else {
+            clearInterval(timerInterval);
+            endExam();
         }
-
-        if (!validateMobileNumber(mobile)) {
-            alert("Mobile number must be exactly 10 digits.");
-            return false;
-        }
-
-        return true;
-    }
-
-    document.addEventListener('copy', function(e) {
-        e.preventDefault();
-    });
-
-    document.addEventListener('cut', function(e) {
-        e.preventDefault();
-    });
-
-    document.addEventListener('paste', function(e) {
-        e.preventDefault();
-    });
-
-    document.addEventListener('contextmenu', function(e) {
-        e.preventDefault();
-    });
-
-    document.addEventListener('selectstart', function(e) {
-        e.preventDefault();
-    });
-
-    document.addEventListener('keydown', function(e) {
-        if (e.ctrlKey && (e.key === 'c' || e.key === 'C' || e.key === 'x' || e.key === 'X' || e.key === 'v' || e.key === 'V')) {
-            e.preventDefault();
-        }
-    });
-
-    window.addEventListener('beforeunload', function() {
-        if (examStarted) {
-            localStorage.setItem('timeLeft', timeLeft);
-            localStorage.setItem('currentQuestionIndex', currentQuestionIndex);
-            localStorage.setItem('score', score);
-        }
-    });
-
-    window.addEventListener('load', function() {
-        if (localStorage.getItem('timeLeft')) {
-            timeLeft = parseInt(localStorage.getItem('timeLeft'));
-            currentQuestionIndex = parseInt(localStorage.getItem('currentQuestionIndex'));
-            score = parseInt(localStorage.getItem('score'));
-            startExam();
-        }
-    });
-});
+    }, 1000);
+}
