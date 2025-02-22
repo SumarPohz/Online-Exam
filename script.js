@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', function() {
         {
             question: "Which of the following PPE would you need to wear to protect yourself against flying objects? (Multiple Options)",
             options: ["A. Ear plugs or ear defenders", "B. Helmets or Bump Caps", "C. Safety spectacles, goggles or face shields."],
-            answer: ["A", "C"],
+            answer: ["B", "C"],
             isMultipleChoice: true
         },
         {
