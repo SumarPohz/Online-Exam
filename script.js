@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const currentQuestion = questions[currentQuestionIndex];
             let optionsHtml = currentQuestion.options.map((option, index) => `
                 <label for="option${index}">
-                    <input type="${currentQuestion.isMultipleChoice ? 'checkbox' : 'radio'}" name="answer" value="${option.charAt(0)}" id="option${index}">
+                    <input type="${currentQuestion.isMultipleChoice ? 'checkbox' : 'radio'}" name="answer${currentQuestion.isMultipleChoice ? index : ''}" value="${option.charAt(0)}" id="option${index}">
                     ${option}
                 </label>
             `).join('');
@@ -136,14 +136,21 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function nextQuestion() {
-        const selectedAnswers = Array.from(document.querySelectorAll('input[name="answer"]:checked')).map(input => input.value);
+        const selectedAnswers = Array.from(document.querySelectorAll('input[name^="answer"]:checked')).map(input => input.value);
         const currentQuestion = questions[currentQuestionIndex];
 
         if (currentQuestion.isMultipleChoice) {
-            // Check if all correct answers are selected and no extra answers are selected
-            const correctAnswers = currentQuestion.answer.sort().toString();
-            const userAnswers = selectedAnswers.sort().toString();
-            if (userAnswers === correctAnswers) {
+            // Check if all correct answers are selected and no incorrect answers are selected
+            const correctAnswers = currentQuestion.answer;
+            const userAnswers = selectedAnswers;
+
+            // Check if all correct answers are selected
+            const allCorrectSelected = correctAnswers.every(answer => userAnswers.includes(answer));
+
+            // Check if no incorrect answers are selected
+            const noIncorrectSelected = userAnswers.every(answer => correctAnswers.includes(answer));
+
+            if (allCorrectSelected && noIncorrectSelected) {
                 score += 10; // Add 10 marks for correct answer
             }
         } else {
