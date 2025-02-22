@@ -78,21 +78,6 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault();
     });
 
-    // Record IP and prevent multiple submissions
-    function getIP() {
-        fetch('https://api.ipify.org?format=json')
-            .then(response => response.json())
-            .then(data => {
-                localStorage.setItem('userIP', data.ip);
-            });
-    }
-
-    if (localStorage.getItem('userIP')) {
-        examContainer.innerHTML = "<h2>Thank you! You have successfully completed the exam.</h2>";
-    } else {
-        getIP();
-    }
-
     // Handle page refresh
     window.addEventListener('beforeunload', function() {
         if (examStarted) {
