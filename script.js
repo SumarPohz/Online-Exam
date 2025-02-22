@@ -1,67 +1,13 @@
-// Prevent text copying and right-click
-document.addEventListener('contextmenu', function(event) {
-    event.preventDefault();
-});
-
-document.addEventListener('keydown', function(event) {
-    if (event.ctrlKey && (event.key === 'c' || event.key === 'C' || event.key === 'v' || event.key === 'V' || event.key === 'x' || event.key === 'X')) {
-        event.preventDefault();
-    }
-});
-
-// Restrict multiple form submissions
-const form = document.getElementById('registration-form');
-form.addEventListener('submit', handleFormSubmit); // Attach the event listener once
-
-function handleFormSubmit(event) {
+document.getElementById('registration-form').addEventListener('submit', function(event) {
     event.preventDefault(); // Prevent the default form submission
 
-    // Check if the form has already been submitted
-    if (localStorage.getItem('formSubmitted') === 'true') {
-        alert('You have already submitted the form from this device.');
-        return;
-    }
+    // Hide the form and show the exam container
+    document.getElementById('form-container').style.display = 'none';
+    document.getElementById('exam-container').style.display = 'block';
 
-    // Disable the submit button to prevent multiple clicks
-    const submitButton = document.getElementById('proceed-btn');
-    submitButton.disabled = true;
-
-    // Proceed with form submission
-    const formData = new FormData(form);
-
-    fetch(form.action, {
-        method: 'POST',
-        body: formData,
-        headers: {
-            'Accept': 'application/json'
-        }
-    })
-    .then(response => {
-        if (response.ok) {
-            alert('Form submitted successfully!');
-            form.reset(); // Clear the form
-
-            // Mark the form as submitted in local storage
-            localStorage.setItem('formSubmitted', 'true');
-
-            // Hide the form and show the exam container
-            document.getElementById('form-container').style.display = 'none';
-            document.getElementById('exam-container').style.display = 'block';
-
-            // Show the popup to confirm exam start
-            document.getElementById('popup').style.display = 'block';
-        } else {
-            alert('Form submission failed. Please try again.');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Form submission failed. Please try again.');
-    })
-    .finally(() => {
-        submitButton.disabled = false; // Re-enable the button after submission
-    });
-}
+    // Show the popup to confirm exam start
+    document.getElementById('popup').style.display = 'block';
+});
 
 // Handle the "Yes" button in the popup
 document.getElementById('yes-btn').addEventListener('click', function() {
@@ -79,7 +25,7 @@ document.getElementById('no-btn').addEventListener('click', function() {
 // Exam Logic
 let currentQuestionIndex = 0;
 let score = 0;
-let timeLeft = 750; // 12.5 minutes in seconds
+let timeLeft = 750; // 5 minutes in seconds
 let timerInterval;
 
 const questions = [
