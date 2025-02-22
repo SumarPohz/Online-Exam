@@ -88,80 +88,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     ];
 
-  function submitFormToFormspree() {
-    const formData = new FormData(registrationForm);
-
-    // Replace 'YOUR_FORM_ID' with your actual Formspree endpoint
-    fetch('https://formspree.io/f/mbldbqkp', {
-        method: 'POST',
-        body: formData,
-        headers: {
-            'Accept': 'application/json'
-        }
-    })
-    .then(response => {
-        if (response.ok) {
-            alert("Exam data submitted successfully!");
-        } else {
-            alert("Failed to submit exam data. Please try again.");
-        }
-    })
-    .catch(error => {
-        console.error("Error submitting exam data:", error);
-        alert("An error occurred while submitting exam data.");
-    });
-}
-    // Hash function to securely hash the mobile number
-    async function hashMobileNumber(mobile) {
-        const encoder = new TextEncoder();
-        const data = encoder.encode(mobile);
-        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-        const hashHex = hashArray.map(byte => byte.toString(16).padStart(2, '0')).join('');
-        return hashHex;
-    }
-
-    // Check if the user has already submitted the exam
-    async function hasUserSubmitted() {
-        const mobile = document.getElementById('mobile').value.trim();
-        const hashedMobile = await hashMobileNumber(mobile);
-        const submittedHashedMobile = localStorage.getItem('submittedHashedMobile');
-        return submittedHashedMobile === hashedMobile;
-    }
-
-    // Validate mobile number (exactly 10 digits)
-    function validateMobileNumber(mobile) {
-        return /^\d{10}$/.test(mobile);
-    }
-
-    // Validate all fields before proceeding
-    async function validateForm() {
-        const name = document.getElementById('name').value.trim();
-        const designation = document.getElementById('designation').value.trim();
-        const agency = document.getElementById('agency').value.trim();
-        const mobile = document.getElementById('mobile').value.trim();
-        const email = document.getElementById('email').value.trim();
-
-        if (!name || !designation || !agency || !mobile || !email) {
-            alert("All fields are mandatory. Please fill in all details.");
-            return false;
-        }
-
-        if (!validateMobileNumber(mobile)) {
-            alert("Mobile number must be exactly 10 digits.");
-            return false;
-        }
-
-        if (await hasUserSubmitted()) {
-            alert("You have already submitted the exam. Only one submission is allowed per user.");
-            return false;
-        }
-
-        return true;
-    }
-
-    proceedBtn.addEventListener('click', async function() {
-        if (await validateForm()) {
+    // Prevent form submission on button click
+    proceedBtn.addEventListener('click', function(event) {
+        event.preventDefault();
+        if (validateForm()) {
             popup.style.display = 'block';
         }
     });
@@ -218,6 +148,12 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
+        // Store the user's answer
+        userAnswers.push({
+            question: currentQuestion.question,
+            answer: selectedAnswers
+        });
+
         if (currentQuestion.isMultipleChoice) {
             if (selectedAnswers.sort().toString() === currentQuestion.answer.sort().toString()) {
                 score += 10;
@@ -253,7 +189,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
     }
 
-    async function endExam() {
+    function endExam() {
         clearInterval(timer);
         const passMark = 60;
         const resultMessage = score >= passMark ? 
@@ -267,52 +203,49 @@ document.addEventListener('DOMContentLoaded', function() {
             ${resultMessage}
         `;
 
-        // Hash the mobile number and store it in localStorage
-        const mobile = document.getElementById('mobile').value.trim();
-        const hashedMobile = await hashMobileNumber(mobile);
-        localStorage.setItem('submittedHashedMobile', hashedMobile);
+        // Prepare exam data for submission
+        const examData = {
+            name: document.getElementById('name').value.trim(),
+            designation: document.getElementById('designation').value.trim(),
+            agency: document.getElementById('agency').value.trim(),
+            mobile: document.getElementById('mobile').value.trim(),
+            email: document.getElementById('email').value.trim(),
+            score: score,
+            answers: JSON.stringify(userAnswers, null, 2)
+        };
+
+        // Populate hidden fields
+        document.getElementById('score').value = examData.score;
+        document.getElementById('answers').value = examData.answers;
+
+        // Submit the form to Formspree
+        submitFormToFormspree();
     }
 
-    document.addEventListener('copy', function(e) {
-        e.preventDefault();
-    });
+    // Function to submit the form to Formspree
+    function submitFormToFormspree() {
+        const formData = new FormData(registrationForm);
 
-    document.addEventListener('cut', function(e) {
-        e.preventDefault();
-    });
+        // Replace 'YOUR_FORM_ID' with your actual Formspree endpoint
+        fetch('https://formspree.io/f/mbldbqkp', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                alert("Exam data submitted successfully!");
+            } else {
+                alert("Failed to submit exam data. Please try again.");
+            }
+        })
+        .catch(error => {
+            console.error("Error submitting exam data:", error);
+            alert("An error occurred while submitting exam data.");
+        });
+    }
 
-    document.addEventListener('paste', function(e) {
-        e.preventDefault();
-    });
-
-    document.addEventListener('contextmenu', function(e) {
-        e.preventDefault();
-    });
-
-    document.addEventListener('selectstart', function(e) {
-        e.preventDefault();
-    });
-
-    document.addEventListener('keydown', function(e) {
-        if (e.ctrlKey && (e.key === 'c' || e.key === 'C' || e.key === 'x' || e.key === 'X' || e.key === 'v' || e.key === 'V')) {
-            e.preventDefault();
-        }
-    });
-
-    window.addEventListener('beforeunload', function() {
-        if (examStarted) {
-            localStorage.setItem('timeLeft', timeLeft);
-            localStorage.setItem('currentQuestionIndex', currentQuestionIndex);
-            localStorage.setItem('score', score);
-        }
-    });
-
-    window.addEventListener('load', function() {
-        if (localStorage.getItem('timeLeft')) {
-            timeLeft = parseInt(localStorage.getItem('timeLeft'));
-            currentQuestionIndex = parseInt(localStorage.getItem('currentQuestionIndex'));
-            score = parseInt(localStorage.getItem('score'));
-            startExam();
-        }
-    });
-});
+    // Validate mobile number (exactly 10 digits)
+    function
