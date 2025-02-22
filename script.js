@@ -13,11 +13,14 @@ document.addEventListener('DOMContentLoaded', function() {
     let timeLeft = 1200;
     let timer;
     let score = 0;
+    let userAnswers = [];
 
     const questions = [
         // Questions and answers as provided earlier
     ];
- function submitExamData() {
+
+    // Function to collect and submit exam data
+    function submitExamData() {
         const examData = {
             name: document.getElementById('name').value.trim(),
             designation: document.getElementById('designation').value.trim(),
