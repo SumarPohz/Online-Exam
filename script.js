@@ -215,3 +215,49 @@ function startTimer() {
         }
     }, 1000);
 }
+// Prevent copying and right-click
+document.addEventListener('contextmenu', function(event) {
+    event.preventDefault();
+});
+
+document.addEventListener('keydown', function(event) {
+    if (event.ctrlKey && (event.key === 'c' || event.key === 'C' || event.key === 'v' || event.key === 'V' || event.key === 'x' || event.key === 'X')) {
+        event.preventDefault();
+    }
+});
+
+// Restrict multiple submissions
+document.getElementById('registration-form').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent the default form submission
+
+    if (localStorage.getItem('formSubmitted') === 'true') {
+        alert('You have already submitted the form from this device.');
+        return;
+    }
+
+    const form = event.target;
+    const formData = new FormData(form);
+
+    fetch(form.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'Accept': 'application/json'
+        }
+    })
+    .then(response => {
+        if (response.ok) {
+            alert('Form submitted successfully!');
+            form.reset();
+            localStorage.setItem('formSubmitted', 'true');
+            document.getElementById('form-container').style.display = 'none';
+            document.getElementById('exam-container').style.display = 'block';
+        } else {
+            alert('Form submission failed. Please try again.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Form submission failed. Please try again.');
+    });
+});
