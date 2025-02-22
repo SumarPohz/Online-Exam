@@ -118,10 +118,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 </label><br>
             `).join('');
 
+            const isLastQuestion = currentQuestionIndex === questions.length - 1;
+            const buttonText = isLastQuestion ? "Submit" : "Next";
+
             questionContainer.innerHTML = `
                 <p><strong>Question ${currentQuestionIndex + 1}:</strong> ${currentQuestion.question}</p>
                 <form id="answer-form">${optionsHtml}</form>
-                <button type="button" id="next-btn">Next</button>
+                <button type="button" id="next-btn">${buttonText}</button>
             `;
 
             document.getElementById('next-btn').addEventListener('click', nextQuestion);
@@ -173,18 +176,15 @@ document.addEventListener('DOMContentLoaded', function() {
     function endExam() {
         clearInterval(timer);
         const passMark = 60;
-        if (score >= passMark) {
-            celebrationPopup.style.display = 'block';
-            setTimeout(() => {
-                celebrationPopup.style.display = 'none';
-            }, 5000); // Hide the celebration popup after 5 seconds
-        }
+        const resultMessage = score >= passMark ? 
+            `<h2>Congratulations! You passed the exam.</h2>` : 
+            `<h2>Sorry, you failed the exam. Please try again.</h2>`;
 
         examContainer.innerHTML = `
             <h2>Exam Completed!</h2>
             <p>Your score: <strong>${score} out of 100</strong></p>
             <p>Minimum marks required: <strong>${passMark}</strong></p>
-            ${score >= passMark ? `<h2>Congratulations! You passed the exam.</h2>` : `<h2>Sorry, you failed the exam. Please try again.</h2>`}
+            ${resultMessage}
         `;
     }
 
