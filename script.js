@@ -10,7 +10,10 @@ document.addEventListener('keydown', function(event) {
 });
 
 // Restrict multiple form submissions
-document.getElementById('registration-form').addEventListener('submit', function(event) {
+const form = document.getElementById('registration-form');
+form.addEventListener('submit', handleFormSubmit); // Attach the event listener once
+
+function handleFormSubmit(event) {
     event.preventDefault(); // Prevent the default form submission
 
     // Check if the form has already been submitted
@@ -19,8 +22,11 @@ document.getElementById('registration-form').addEventListener('submit', function
         return;
     }
 
+    // Disable the submit button to prevent multiple clicks
+    const submitButton = document.getElementById('proceed-btn');
+    submitButton.disabled = true;
+
     // Proceed with form submission
-    const form = event.target;
     const formData = new FormData(form);
 
     fetch(form.action, {
@@ -51,8 +57,11 @@ document.getElementById('registration-form').addEventListener('submit', function
     .catch(error => {
         console.error('Error:', error);
         alert('Form submission failed. Please try again.');
+    })
+    .finally(() => {
+        submitButton.disabled = false; // Re-enable the button after submission
     });
-});
+}
 
 // Handle the "Yes" button in the popup
 document.getElementById('yes-btn').addEventListener('click', function() {
@@ -70,7 +79,7 @@ document.getElementById('no-btn').addEventListener('click', function() {
 // Exam Logic
 let currentQuestionIndex = 0;
 let score = 0;
-let timeLeft = 900; // 5 minutes in seconds
+let timeLeft = 750; // 12.5 minutes in seconds
 let timerInterval;
 
 const questions = [
