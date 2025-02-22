@@ -179,13 +179,40 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
     }
 
-    // Prevent copying and right-clicking
-    document.addEventListener('contextmenu', function(e) {
-        e.preventDefault();
-    });
-
+    // Prevent copying, cutting, and pasting
     document.addEventListener('copy', function(e) {
         e.preventDefault();
+        alert("Copying is disabled during the exam.");
+    });
+
+    document.addEventListener('cut', function(e) {
+        e.preventDefault();
+        alert("Cutting is disabled during the exam.");
+    });
+
+    document.addEventListener('paste', function(e) {
+        e.preventDefault();
+        alert("Pasting is disabled during the exam.");
+    });
+
+    // Disable right-clicking
+    document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+        alert("Right-clicking is disabled during the exam.");
+    });
+
+    // Disable text selection
+    document.addEventListener('selectstart', function(e) {
+        e.preventDefault();
+        alert("Text selection is disabled during the exam.");
+    });
+
+    // Disable keyboard shortcuts (Ctrl+C, Ctrl+X, Ctrl+V)
+    document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && (e.key === 'c' || e.key === 'C' || e.key === 'x' || e.key === 'X' || e.key === 'v' || e.key === 'V')) {
+            e.preventDefault();
+            alert("Keyboard shortcuts for copying, cutting, and pasting are disabled during the exam.");
+        }
     });
 
     // Handle page refresh
