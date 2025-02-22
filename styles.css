@@ -1,6 +1,7 @@
+/* General Styles */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f9;
     margin: 0;
     padding: 0;
     display: flex;
@@ -8,69 +9,103 @@ body {
     align-items: center;
     min-height: 100vh;
     flex-direction: column;
+    color: #333;
 }
 
+/* Form Container */
 #form-container, #exam-container {
     background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     width: 90%;
     max-width: 500px;
-    text-align: center;
+    text-align: left;
     margin: 20px;
 }
 
+/* Form Labels */
 label {
     display: block;
     margin-bottom: 8px;
-    font-weight: bold;
+    font-weight: 600;
+    color: #555;
 }
 
+/* Form Inputs */
 input, select {
     width: 100%;
-    padding: 10px;
-    margin-bottom: 16px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
     font-size: 16px;
+    color: #333;
+    background-color: #f9f9f9;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
+input:focus, select:focus {
+    border-color: #28a745;
+    box-shadow: 0 0 8px rgba(40, 167, 69, 0.3);
+    outline: none;
+}
+
+/* Buttons */
 button {
-    padding: 10px 20px;
+    padding: 12px 24px;
     background-color: #28a745;
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     cursor: pointer;
     font-size: 16px;
+    font-weight: 600;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 button:hover {
     background-color: #218838;
+    transform: translateY(-2px);
 }
 
+button:active {
+    transform: translateY(0);
+}
+
+/* Popup Styles */
 #popup {
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     text-align: center;
     z-index: 1000;
 }
 
+#popup p {
+    margin-bottom: 20px;
+    font-size: 18px;
+    color: #555;
+}
+
+#popup button {
+    margin: 0 10px;
+}
+
+/* Celebration Popup */
 #celebration-popup {
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: rgba(255, 255, 255, 0.9);
-    padding: 20px;
-    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.95);
+    padding: 25px;
+    border-radius: 12px;
     text-align: center;
     z-index: 1001;
     display: none;
@@ -85,8 +120,10 @@ button:hover {
 #celebration-popup h2 {
     color: #28a745;
     font-size: 24px;
+    margin: 0;
 }
 
+/* Footer */
 footer {
     position: fixed;
     bottom: 10px;
@@ -107,6 +144,7 @@ footer strong {
     color: #28a745;
 }
 
+/* Exam Container */
 #question-container {
     text-align: left;
     margin: 20px 0;
@@ -116,14 +154,37 @@ footer strong {
     display: block;
     margin: 10px 0;
     font-weight: normal;
+    cursor: pointer;
 }
 
 #question-container input {
     margin-right: 10px;
+    cursor: pointer;
 }
 
 #timer {
     font-size: 18px;
     font-weight: bold;
     margin-top: 20px;
+    color: #555;
+}
+
+/* Cursor Enhancements */
+button, input[type="radio"], input[type="checkbox"], select {
+    cursor: pointer;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    #form-container, #exam-container {
+        padding: 20px;
+    }
+
+    input, select {
+        padding: 10px;
+    }
+
+    button {
+        padding: 10px 20px;
+    }
 }
