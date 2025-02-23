@@ -189,7 +189,7 @@ function endExam() {
     // Display the score
     const celebrationPopup = document.getElementById('celebration-popup');
     celebrationPopup.innerHTML = `
-        <img src="https://media.giphy.com/media/3o7abKhOpu0NwenH3O/giphy.gif" alt="Celebration GIF">
+        <img src="sumar.jpg" alt="Celebration img">
         <h2>Congratulations! You scored ${score} out of ${questions.length}!</h2>
     `;
 
