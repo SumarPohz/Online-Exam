@@ -1,3 +1,30 @@
+// Disable right-click
+document.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+});
+
+// Disable text selection
+document.addEventListener('selectstart', function(e) {
+    e.preventDefault();
+});
+
+// Disable copy event
+document.addEventListener('copy', function(e) {
+    e.preventDefault();
+    alert('Copying content is not allowed.');
+});
+
+// Optional: Disable Ctrl+C, Ctrl+X, Ctrl+U, etc.
+document.addEventListener('keydown', function(e) {
+    if (e.ctrlKey && (e.key === 'c' || e.key === 'x' || e.key === 'u')) {
+        e.preventDefault();
+        alert('Keyboard shortcuts are disabled.');
+    }
+});
+
+
+
+
 document.getElementById('registration-form').addEventListener('submit', function(event) {
     event.preventDefault(); // Prevent the default form submission
 
