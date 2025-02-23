@@ -3,58 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Online Exam Platform</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Quiz Result</title>
 </head>
 <body>
-    <div id="form-container">
-        <form id="registration-form" action="https://formspree.io/f/mbldbqkp" method="POST>
-            <h2>Exam Registration</h2>
-            <label for="name">Name:</label>
-            <input type="text" id="name" name="name" required>
+    <h1>Quiz</h1>
 
-            <label for="designation">Designation:</label>
-            <select id="designation" name="designation" required>
-                <option value="">Select Designation</option>
-                <option value="Security Guard">Security Guard</option>
-                <option value="Security Supervisor">Security Supervisor</option>
-            </select>
+    <form id="quizForm">
+        <label for="q1">Question 1: 2 + 2 = ?</label>
+        <input type="number" id="q1" name="q1"><br><br>
 
-            <label for="agency">Agency Name:</label>
-            <input type="text" id="agency" name="agency" required>
+        <label for="q2">Question 2: 5 - 3 = ?</label>
+        <input type="number" id="q2" name="q2"><br><br>
 
-            <label for="mobile">Mobile Number:</label>
-            <input type="tel" id="mobile" name="mobile" required>
+        <button type="submit">Submit</button>
+    </form>
 
-            <label for="email">Email ID:</label>
-            <input type="email" id="email" name="email" required>
+    <h2 id="result"></h2>
+    <h3 id="message"></h3>
 
-            <button type="submit" id="proceed-btn">Proceed Next</button>
-        </form>
-    </div>
+    <script>
+        document.getElementById('quizForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const q1 = parseInt(document.getElementById('q1').value);
+            const q2 = parseInt(document.getElementById('q2').value);
+            
+            let score = 0;
+            if (q1 === 4) score += 50;
+            if (q2 === 2) score += 50;
 
-    <div id="exam-container" style="display:none;">
-        <h2>Exam</h2>
-        <div id="question-container"></div>
-        <div id="timer"></div>
-    </div>
+            document.getElementById('result').textContent = 'Total Score: ' + score;
 
-    <div id="popup" style="display:none;">
-        <p>You're about to start your exam. Are you ready?</p>
-        <button id="yes-btn">Yes</button>
-        <button id="no-btn">No</button>
-    </div>
-
-    <!-- Celebration Popup -->
-    <div id="celebration-popup" style="display:none;">
-        <img src="sumar.jpg" alt="Celebration img">
-        <h2>Congratulations! You passed the exam!</h2>
-    </div>
-
-    <footer>
-        <p>Coded and designed by <strong>Sumar Pohz</strong></p>
-    </footer>
-
-    <script src="script.js"></script>
+            const message = score >= 60 ? 'Congratulations! You passed.' : 'You failed. Try again.';
+            document.getElementById('message').textContent = message;
+        });
+    </script>
 </body>
 </html>
