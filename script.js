@@ -205,7 +205,7 @@ function submitExamResults() {
     // Add exam results to the form data
     formData.append('score', score);
     formData.append('totalQuestions', questions.length);
-    formData.append('timeTaken', (300 - timeLeft));
+    formData.append('timeTaken', (750 - timeLeft));
 
     fetch(form.action, {
         method: 'POST',
