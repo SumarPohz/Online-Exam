@@ -186,16 +186,26 @@ function endExam() {
     document.getElementById('exam-container').style.display = 'none';
     document.getElementById('celebration-popup').style.display = 'block';
 
-    // Display the score
+    // Calculate total marks and display result
+    const totalMarks = (score / questions.length) * 100; // Assuming score is the count of correct answers
     const celebrationPopup = document.getElementById('celebration-popup');
-    celebrationPopup.innerHTML = `
-        <img src="sumar.jpg" alt="Celebration img">
-        <h2>Congratulations! You scored ${score} out of ${questions.length}!</h2>
-    `;
+
+    if (totalMarks >= 60) {
+        celebrationPopup.innerHTML = `
+            <img src="sumar.jpg" alt="Celebration img">
+            <h2>Congratulations! You passed with a score of ${score} out of ${questions.length}!</h2>
+        `;
+    } else {
+        celebrationPopup.innerHTML = `
+            <img src="sumar.jpg" alt="Try again img">
+            <h2>Sorry, you failed. Your score is ${score} out of ${questions.length}. Try again!</h2>
+        `;
+    }
 
     // Submit exam results to Formspree
     submitExamResults();
 }
+
 
 // Function to submit exam results to Formspree
 function submitExamResults() {
