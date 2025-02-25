@@ -190,7 +190,7 @@ function endExam() {
     const totalMarks = (score / questions.length) * 100; // Assuming score is the count of correct answers
     const celebrationPopup = document.getElementById('celebration-popup');
 
-    if (totalMarks >= 60) {
+    if (totalMarks >= 50) {
         celebrationPopup.innerHTML = `
             <img src="sumar.jpg" alt="Celebration img">
             <h2>Congratulations! You passed with a score of ${score} out of ${questions.length}!</h2>
