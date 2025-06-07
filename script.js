@@ -197,7 +197,7 @@ function endExam() {
         `;
     } else {
         celebrationPopup.innerHTML = `
-            <img src="sumar.jpg" alt="Try again img">
+            <img src="SmrPohz.gif" alt="Try again img">
             <h2>Sorry, you failed. Your score is ${score} out of ${questions.length}. Try again!</h2>
         `;
     }
