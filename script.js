@@ -192,7 +192,7 @@ function endExam() {
 
     if (totalMarks >= 50) {
         celebrationPopup.innerHTML = `
-            <img src="sumar.jpg" alt="Celebration img">
+            <img src="SmrPohz.gif" alt="Celebration img">
             <h2>Congratulations! You passed with a score of ${score} out of ${questions.length}!</h2>
         `;
     } else {
